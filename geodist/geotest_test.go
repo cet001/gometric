@@ -1,9 +1,19 @@
 package geodist
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
+
+func ExampleApproxDist() {
+	voodooDoughnuts := Coord{Lat: 45.522869, Lng: -122.673132}
+	powellsCityOfBooks := Coord{Lat: 45.523437, Lng: -122.681381}
+	d := ApproxDist(voodooDoughnuts, powellsCityOfBooks)
+	fmt.Printf("Voodoo Doughnuts is %.2f km from Powell's City of Books.\n", d)
+	// Output:
+	// Voodoo Doughnuts is 0.64 km from Powell's City of Books.
+}
 
 func TestApproxDist(t *testing.T) {
 	// Various places in/around the Mission and Castro
