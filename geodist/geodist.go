@@ -14,9 +14,9 @@ type Coord struct {
 // Returns the **approximate** distance (in kilometers) between coordinates c1 and
 // c2.  This distance function is much faster than, say, the Haversine fomrula
 // or the spherical law of cosines, as it does not take into account the
-// curvature of the earth.  Instead, this function trivially takes the Euclidian
-// distance between the two coordinates.  Because of this, the accuracy becomes
-// worse the farther apart coordinates c1 and c2 become.
+// curvature of the earth.  Instead, ApproxDist() trivially takes the Euclidian
+// distance between the two coordinates -- and as a result of this, its accuracy
+// decreases as the actual distance bertween c1 and c2 increases.
 //
 // This function is practical in situations where you need to calculate the
 // distance between two "relatively close" points on a map (e.g. 2 houses
