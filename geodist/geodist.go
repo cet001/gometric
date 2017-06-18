@@ -12,7 +12,7 @@ type Coord struct {
 }
 
 // Returns the **approximate** distance (in kilometers) between coordinates c1 and
-// c2.  This distance function is much faster than, say, the Haversine fomrula
+// c2.  This distance function is much faster than, say, the Haversine formula
 // or the spherical law of cosines, as it does not take into account the
 // curvature of the earth.  Instead, ApproxDist() trivially takes the Euclidian
 // distance between the two coordinates -- and as a result of this, its accuracy
