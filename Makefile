@@ -9,11 +9,11 @@ clean :
 
 test : clean
 	@echo ">>> Running unit tests <<<"
-	@go test ./ ./strdist ./geodist
+	@go test ./ ./strdist
 
 test-coverage : clean
 	@echo ">>> Running unit tests and calculating code coverage <<<"
-	@go test ./ ./strdist ./geodist -cover
+	@go test ./ ./strdist -cover
 
 install : test
 	@echo ">>> Building and installing gometric <<<"
