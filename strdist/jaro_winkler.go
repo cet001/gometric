@@ -74,7 +74,7 @@ func (me *JaroWinkler) Dist(s1, s2 string) float64 {
 
 	jaroDist := ((m / float64(lenS1)) + (m / float64(lenS2)) + ((m - t) / m)) / 3.0
 
-	// Calculate the length of the largest common prefix of s1 and s2
+	// Let p be the length of the largest common prefix of s1 and s2 (limit to 4 chars)
 	p := 0
 	for i := 0; i < lenS1; i++ {
 		if i < lenS2 {
@@ -82,8 +82,12 @@ func (me *JaroWinkler) Dist(s1, s2 string) float64 {
 				break
 			}
 			p++
+			if p == 4 {
+				break
+			}
 		}
 	}
+
 	jaroWinklerDist := jaroDist + float64(p)*me.prefixScale*(1.0-jaroDist)
 	return jaroWinklerDist
 }

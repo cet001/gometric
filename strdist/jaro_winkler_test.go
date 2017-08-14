@@ -45,6 +45,12 @@ func TestJaroWinkler_Dist(t *testing.T) {
 	assertDist(0.8323809523809523, "jones", "johnson")
 }
 
+func TestJaroWinkler_Dist_limitCommonPrefixLength(t *testing.T) {
+	jaroWinkler := NewJaroWinkler()
+	d := jaroWinkler.Dist("aaaaaaaaaaaaaaaaaabbbbbbbbbbbbbb", "aaaaaaaaaaaaaaaaaacccccccccccccc")
+	assert.True(t, d < 1.0)
+}
+
 func Benchmark_JaroWinkler_Dist(b *testing.B) {
 	s1values := []string{"martha", "dixon", "apple", "constitution", "mississippi"}
 	s2values := []string{"marhta", "dicksonx", "microsoft", "intervention", "misanthrope"}
