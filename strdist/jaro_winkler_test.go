@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func ExampleJaroWinklerDist() {
+func ExampleJaroWinkler() {
 	jaroWinkler := NewJaroWinkler()
 	fmt.Println(jaroWinkler.Dist("andrew", "andrew"))
 	fmt.Println(jaroWinkler.Dist("martha", "marhta"))
@@ -19,22 +19,30 @@ func ExampleJaroWinklerDist() {
 	// 0
 }
 
-func TestJaroWinklerDist_CalcString(t *testing.T) {
+func TestJaroWinkler_Dist(t *testing.T) {
 	jaroWinkler := NewJaroWinkler()
 
-	assert.Equal(t, 0.0, jaroWinkler.Dist("", ""))
-	assert.Equal(t, 0.0, jaroWinkler.Dist("abc", ""))
-	assert.Equal(t, 0.0, jaroWinkler.Dist("", "abc"))
-	assert.Equal(t, 0.0, jaroWinkler.Dist("abc", "xyz"))
+	// This function asserts that the expected distance score is returned by both
+	// Dist(s1, s2) and Dist(s2, s1).
+	assertDist := func(expected float64, s1, s2 string) {
+		assert.Equal(t, expected, jaroWinkler.Dist(s1, s2), fmt.Sprintf("Dist('%v', '%v')", s1, s2))
+		assert.Equal(t, expected, jaroWinkler.Dist(s2, s1), fmt.Sprintf("Dist('%v', '%v')", s2, s1))
+	}
 
-	assert.Equal(t, 1.0, jaroWinkler.Dist("abc", "abc"))
+	assertDist(0.0, "", "")
+	assertDist(0.0, "abc", "")
+	assertDist(0.0, "", "abc")
+	assertDist(0.0, "abc", "xyz")
+
+	assertDist(1.0, "abc", "abc")
+	assertDist(1.0, "takahashi", "takahashi")
 
 	// See examples 1 and 2 from https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance
-	assert.Equal(t, 0.9611111111111111, jaroWinkler.Dist("martha", "marhta"))
-	assert.Equal(t, 0.8133333333333332, jaroWinkler.Dist("dixon", "dicksonx"))
+	assertDist(0.9611111111111111, "martha", "marhta")
+	assertDist(0.8133333333333332, "dixon", "dicksonx")
 
 	// See examples from http://alias-i.com/lingpipe/docs/api/com/aliasi/spell/JaroWinklerDistance.html
-	assert.Equal(t, 0.8323809523809523, jaroWinkler.Dist("jones", "johnson"))
+	assertDist(0.8323809523809523, "jones", "johnson")
 }
 
 func Benchmark_JaroWinkler_Dist(b *testing.B) {
@@ -46,7 +54,7 @@ func Benchmark_JaroWinkler_Dist(b *testing.B) {
 	jaroWinkler := NewJaroWinkler()
 
 	calcDist := func() {
-		// dist.CalcString(s1values[i], s2values[i])
+		// dist.CalcString(s1values[i], s2values[ i])
 		jaroWinkler.Dist(s1values[i], s2values[i])
 		i++
 		if i == numValues {

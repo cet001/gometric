@@ -47,6 +47,7 @@ func (me *JaroWinkler) Dist(s1, s2 string) float64 {
 				m++
 				s1matches[i] = true
 				s2matches[j] = true
+				break
 			}
 		}
 	}
