@@ -4,28 +4,26 @@ import (
 	"github.com/cet001/mathext/ints"
 )
 
-// Calculates the Jaro-Winkler string distance (similarity) score.
+// Calculates the Jaro string distance (similarity) score.
 // Based on the Wikipedia description: https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance.
-type JaroWinkler struct {
-	s1matches   []bool
-	s2matches   []bool
-	prefixScale float64
+type Jaro struct {
+	s1matches []bool
+	s2matches []bool
 }
 
-func NewJaroWinkler() *JaroWinkler {
+func NewJaro() *Jaro {
 	maxStringLen := 1024 * 4 // size of working space
 
-	return &JaroWinkler{
-		s1matches:   make([]bool, maxStringLen),
-		s2matches:   make([]bool, maxStringLen),
-		prefixScale: 0.1,
+	return &Jaro{
+		s1matches: make([]bool, maxStringLen),
+		s2matches: make([]bool, maxStringLen),
 	}
 }
 
-// Returns the Jaro-Winkler distance score for s1 and s2.
+// Returns the Jaro distance score for s1 and s2.
 //
 // WARNING: This method is NOT threadsafe!
-func (me *JaroWinkler) Dist(s1, s2 string) float64 {
+func (me *Jaro) Dist(s1, s2 string) float64 {
 	lenS1, lenS2 := len(s1), len(s2)
 	maxMatchDist := (ints.Max(lenS1, lenS2) / 2) - 1
 	s1matches, s2matches := me.s1matches, me.s2matches
@@ -72,7 +70,28 @@ func (me *JaroWinkler) Dist(s1, s2 string) float64 {
 	}
 	t := float64(halfTranspositions / 2)
 
-	jaroDist := ((m / float64(lenS1)) + (m / float64(lenS2)) + ((m - t) / m)) / 3.0
+	return ((m / float64(lenS1)) + (m / float64(lenS2)) + ((m - t) / m)) / 3.0
+}
+
+// Calculates the Jaro-Winkler string distance (similarity) score.
+type JaroWinkler struct {
+	jaro        *Jaro
+	prefixScale float64
+}
+
+func NewJaroWinkler() *JaroWinkler {
+	return &JaroWinkler{
+		jaro:        NewJaro(),
+		prefixScale: 0.10,
+	}
+}
+
+// Returns the Jaro-Winkler distance score for s1 and s2.
+//
+// WARNING: This method is NOT threadsafe!
+func (me *JaroWinkler) Dist(s1, s2 string) float64 {
+	lenS1, lenS2 := len(s1), len(s2)
+	jaroDist := me.jaro.Dist(s1, s2)
 
 	// Let p be the length of the largest common prefix of s1 and s2 (limit to 4 chars)
 	p := 0
@@ -88,6 +107,5 @@ func (me *JaroWinkler) Dist(s1, s2 string) float64 {
 		}
 	}
 
-	jaroWinklerDist := jaroDist + float64(p)*me.prefixScale*(1.0-jaroDist)
-	return jaroWinklerDist
+	return jaroDist + float64(p)*me.prefixScale*(1.0-jaroDist)
 }
