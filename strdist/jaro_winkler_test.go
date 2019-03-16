@@ -60,7 +60,6 @@ func Benchmark_JaroWinkler_Dist(b *testing.B) {
 	jaroWinkler := NewJaroWinkler()
 
 	calcDist := func() {
-		// dist.CalcString(s1values[i], s2values[ i])
 		jaroWinkler.Dist(s1values[i], s2values[i])
 		i++
 		if i == numValues {

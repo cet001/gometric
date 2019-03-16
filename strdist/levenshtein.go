@@ -4,7 +4,7 @@ import (
 	"github.com/cet001/mathext/ints"
 )
 
-// Calculates theLevenshtein distance between 2 strings.
+// Calculates the Levenshtein distance between 2 strings.
 //
 // See https://en.wikipedia.org/wiki/Levenshtein_distance
 type Levenshtein struct {
@@ -41,7 +41,7 @@ func (me *Levenshtein) Dist(a, b string) int {
 				mn = ints.Min(mn, fj1) // matched
 			}
 
-			fj1, f[j] = f[j], mn // save f[j] to fj1(j is about to increase), update f[j] to mn
+			fj1, f[j] = f[j], mn // save f[j] to fj1 (j is about to increase), update f[j] to mn
 			j++
 		}
 	}
