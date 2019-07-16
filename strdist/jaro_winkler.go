@@ -4,6 +4,8 @@ import (
 	"github.com/cet001/mathext/ints"
 )
 
+const maxStringLen = 1024 * 4 // size of working space
+
 // Calculates the Jaro string distance (similarity) score.
 // Based on the Wikipedia description: https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance.
 type Jaro struct {
@@ -12,8 +14,6 @@ type Jaro struct {
 }
 
 func NewJaro() *Jaro {
-	maxStringLen := 1024 * 4 // size of working space
-
 	return &Jaro{
 		s1matches: make([]bool, maxStringLen),
 		s2matches: make([]bool, maxStringLen),
@@ -25,6 +25,17 @@ func NewJaro() *Jaro {
 // WARNING: This method is NOT threadsafe!
 func (me *Jaro) Dist(s1, s2 string) float64 {
 	lenS1, lenS2 := len(s1), len(s2)
+
+	if lenS1 > maxStringLen {
+		lenS1 = maxStringLen
+		s1 = s1[:maxStringLen]
+	}
+
+	if lenS2 > maxStringLen {
+		lenS2 = maxStringLen
+		s2 = s2[:maxStringLen]
+	}
+
 	maxMatchDist := (ints.Max(lenS1, lenS2) / 2) - 1
 	s1matches, s2matches := me.s1matches, me.s2matches
 

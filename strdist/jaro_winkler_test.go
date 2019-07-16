@@ -3,6 +3,7 @@ package strdist
 import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
+	"strings"
 	"testing"
 )
 
@@ -49,6 +50,21 @@ func TestJaroWinkler_Dist_limitCommonPrefixLength(t *testing.T) {
 	jaroWinkler := NewJaroWinkler()
 	d := jaroWinkler.Dist("aaaaaaaaaaaaaaaaaabbbbbbbbbbbbbb", "aaaaaaaaaaaaaaaaaacccccccccccccc")
 	assert.True(t, d < 1.0)
+}
+
+func TestJaroWinkler_Dist_veryLongStrings(t *testing.T) {
+	jaroWinkler := NewJaroWinkler()
+
+	s1 := strings.Repeat("a", maxStringLen+1)
+	s2 := "foo"
+
+	assert.NotPanics(t, func() {
+		jaroWinkler.Dist(s1, s2)
+	})
+
+	assert.NotPanics(t, func() {
+		jaroWinkler.Dist(s2, s1)
+	})
 }
 
 func Benchmark_JaroWinkler_Dist(b *testing.B) {
